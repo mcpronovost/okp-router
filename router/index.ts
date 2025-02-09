@@ -12,7 +12,7 @@ import type {
  * Router version
  * @type {string}
  */
-export const version: string = "0.2.2";
+export const version: string = "0.2.3";
 
 /**
  * Configure router settings
@@ -21,6 +21,7 @@ export const version: string = "0.2.2";
 export const routerConfig = {
   defaultLang: "en",
   supportedLangs: ["en"],
+  viewExtension: "jsx",
   routes: {} as Record<string, RouteType>,
   routeModules: undefined,
   views: {} as ViewModulesType,
@@ -73,10 +74,10 @@ export const getViews = (): ViewModulesType | null => {
 
 /**
  * Get the current view
- * @returns {Promise<{ viewModule: any, props: any, params: any } | null>} - The current view
+ * @returns {Promise<{ viewModule: any, auth: boolean, props: any, params: any } | null>} - The current view
  */
-export const getView = async (): Promise<{ viewModule: any, props: any, params: any }> => {
-  const nullView = { viewModule: {default: () => null}, props: null, params: null }
+export const getView = async (): Promise<{ viewModule: any, auth: boolean, props: any, params: any }> => {
+  const nullView = { viewModule: {default: () => null}, auth: false, props: null, params: null }
   const documentLang = document.documentElement.lang;
   const currentPath = window.location.pathname
   const [, langCode, ...uriParts] = currentPath.split(/^\/([a-z]{2})\//);
@@ -103,7 +104,7 @@ export const getView = async (): Promise<{ viewModule: any, props: any, params: 
     }
 
     const [_, { view, auth, props, params }] = route;
-    const viewPath = `./views/${view}.jsx`;
+    const viewPath = `./views/${view}.${routerConfig.defaultViewExtension}`;
 
     // If no view found, redirect to the 404 page
     if (!routerConfig.views[viewPath]) {
@@ -112,13 +113,13 @@ export const getView = async (): Promise<{ viewModule: any, props: any, params: 
         throw new Error("No view found");
       }
       throw new Error("No 404 view found", {
-        cause: "Be sure to create an \"errors/404.jsx\" file in your views folder."
+        cause: `Be sure to create an \"errors/404.${routerConfig.defaultViewExtension}\" file in your views folder.`
       });
     }
 
     const viewModule = await routerConfig.views[viewPath]();
 
-    return { viewModule, props, params };
+    return { viewModule, auth: auth || false, props, params };
   } catch (e) {
     if (e instanceof Error && e.cause) {
       showRouterError(e.message, e.cause as string);

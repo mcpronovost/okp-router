@@ -1,4 +1,4 @@
-# okp-router &middot; [![npm version](https://img.shields.io/npm/v/@mcpronovost/okp-router.svg?style=flat)](https://www.npmjs.com/package/@mcpronovost/okp-router) [![npm license](https://img.shields.io/npm/l/@mcpronovost/okp-router?color=%231081c2)](https://github.com/mcpronovost/okp-router/blob/main/LICENSE) &middot; [![made in Canada](https://img.shields.io/badge/made%20in-Canada-red)](#) [![made in Québec](https://img.shields.io/badge/fait%20au-Québec-blue)](#)
+# okp-router &middot; [![npm version](https://img.shields.io/npm/v/@mcpronovost/okp-router.svg?style=flat)](https://www.npmjs.com/package/@mcpronovost/okp-router) [![npm license](https://img.shields.io/npm/l/@mcpronovost/okp-router?color=%231081c2)](https://github.com/mcpronovost/okp-router/blob/main/LICENSE) &middot; [![made in Canada](https://img.shields.io/badge/made%20in-Canada-FF0000)](#) [![made in Québec](https://img.shields.io/badge/fait%20au-Québec-003399)](#)
 
 OKP Router is a lightweight routing solution specifically designed for Vite-based projects with multilingual support.
 
@@ -25,6 +25,19 @@ npm i @mcpronovost/okp-router
 
 ## Configuration
 
+### Default Configuration
+
+```ts
+{
+  defaultLang: "en",
+  supportedLangs: ["en"],
+  viewExtension: "jsx",
+  routes: {},
+  routeModules: undefined,
+  views: {},
+}
+```
+
 ### Direct Configuration
 
 Define your routes and views directly in the configuration object.
@@ -35,6 +48,7 @@ import { initRouter } from "@mcpronovost/okp-router";
 initRouter({
   defaultLang: "en",
   supportedLangs: ["en", "fr"],
+  viewExtension: "jsx",
   routes: {
     home: {
       view: "Home",
@@ -78,15 +92,15 @@ import { initRouter } from "@mcpronovost/okp-router";
 initRouter({
   defaultLang: "en",
   supportedLangs: ["en", "fr"],
+  viewExtension: "tsx",
   routeModules: import.meta.glob("./routes/**/*.js", {
     eager: true,
   }),
-  views: import.meta.glob("./views/**/*.jsx", {
+  views: import.meta.glob("./views/**/*.tsx", {
     eager: false,
-  })
+  }),
 });
 ```
-
 
 ## Key Components
 
@@ -100,18 +114,17 @@ initRouter({
 ### View Management
 
 - Views are lazy-loaded components.
-- Supports JSX/TSX files.
+- Configurable views extension.
 - Automatic error handling with customizable 404 page.
-
 
 ### URL Structure
 
 - Format: `/[lang]/[route]`
-   - Example: `/fr/accueil`
+  - Example: `/fr/accueil`
 - Fallback: `/[defaultLang]/[route]`
-   - Example: `/en/home`
+  - Example: `/en/home`
 - Parameter handling: `/[lang]/[route]/{param}`
-   - Example: `/en/settings/123`
+  - Example: `/en/settings/123`
 
 ## Example Usage
 
