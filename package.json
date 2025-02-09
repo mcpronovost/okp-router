@@ -1,7 +1,7 @@
 {
   "name": "@mcpronovost/okp-router",
   "description": "OKP Router for Vite-based projects.",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "author": "M-C Pronovost",
   "homepage": "https://github.com/mcpronovost/okp-router",
   "repository": {
