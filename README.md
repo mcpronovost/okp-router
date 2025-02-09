@@ -1,6 +1,21 @@
 # okp-router &middot; [![npm version](https://img.shields.io/npm/v/@mcpronovost/okp-router.svg?style=flat)](https://www.npmjs.com/package/@mcpronovost/okp-router) [![npm license](https://img.shields.io/npm/l/@mcpronovost/okp-router?color=%231081c2)](https://github.com/mcpronovost/okp-router/blob/main/LICENSE)
 
-OKP Router for Vite-based projects.
+OKP Router is a lightweight routing solution specifically designed for Vite-based projects with multilingual support.
+
+## Features
+
+1. **Multilingual support**
+   - Build-in language handling
+   - URL-based language switching
+   - Configurable default and supported languages
+2. **Dynamic routes**
+   - Nested route support
+   - Parameter handling in URLs
+   - Automatic 404 handling
+3. **View management**
+   - Lazy loading of views
+   - Automatic view resolution
+   - Props and parameters passing
 
 ## Installation
 
@@ -9,6 +24,10 @@ npm i @mcpronovost/okp-router
 ```
 
 ## Configuration
+
+### Direct Configuration
+
+Define your routes and views directly in the configuration object.
 
 ```ts
 import { initRouter } from "@mcpronovost/okp-router";
@@ -49,14 +68,16 @@ initRouter({
 });
 ```
 
-or
+### Module-based Configuration
+
+Use Vite's glob pattern to import routes and views from modules.
 
 ```ts
 import { initRouter } from "@mcpronovost/okp-router";
 
 initRouter({
-  defaultLang: import.meta.env.VITE_DEFAULT_LANGUAGE,
-  supportedLangs: import.meta.env.VITE_SUPPORTED_LANGUAGES.split(","),
+  defaultLang: "en",
+  supportedLangs: ["en", "fr"],
   routeModules: import.meta.glob("./routes/**/*.js", {
     eager: true,
   }),
@@ -65,6 +86,32 @@ initRouter({
   })
 });
 ```
+
+
+## Key Components
+
+### Route Definition
+
+- `view`: The view to display for the route.
+- `paths`: The paths for the route in different languages.
+- `props`: The props to pass to the view.
+- `children`: The child routes for the route.
+
+### View Management
+
+- Views are lazy-loaded components.
+- Supports JSX/TSX files.
+- Automatic error handling with customizable 404 page.
+
+
+### URL Structure
+
+- Format: `/[lang]/[route]`
+   - Example: `/fr/accueil`
+- Fallback: `/[defaultLang]/[route]`
+   - Example: `/en/home`
+- Parameter handling: `/[lang]/[route]/{param}`
+   - Example: `/en/settings/123`
 
 ## Example Usage
 
@@ -101,7 +148,7 @@ function App() {
 
 ## Peer Dependencies
 
-- **[Vite](https://vitejs.dev/)** - Build tool
+- **[Vite](https://vitejs.dev/)** (version 6 or higher)
 
 ## License
 
