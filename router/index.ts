@@ -12,7 +12,7 @@ import type {
  * Router version
  * @type {string}
  */
-export const version: string = "0.2.3";
+export const version: string = "0.2.4";
 
 /**
  * Configure router settings
@@ -21,10 +21,11 @@ export const version: string = "0.2.3";
 export const routerConfig = {
   defaultLang: "en",
   supportedLangs: ["en"],
-  viewExtension: "jsx",
   routes: {} as Record<string, RouteType>,
   routeModules: undefined,
   views: {} as ViewModulesType,
+  viewsCache: new Map<string, any>(),
+  viewsExtension: "jsx",
 };
 
 /**
@@ -104,7 +105,13 @@ export const getView = async (): Promise<{ viewModule: any, auth: boolean, props
     }
 
     const [_, { view, auth, props, params }] = route;
-    const viewPath = `./views/${view}.${routerConfig.defaultViewExtension}`;
+    const viewPath = `./views/${view}.${routerConfig.viewsExtension}`;
+
+    // Check cache first
+    if (routerConfig.viewsCache.has(viewPath)) {
+      const viewModule = routerConfig.viewsCache.get(viewPath);
+      return { viewModule, auth: auth || false, props, params };
+    }
 
     // If no view found, redirect to the 404 page
     if (!routerConfig.views[viewPath]) {
@@ -113,11 +120,14 @@ export const getView = async (): Promise<{ viewModule: any, auth: boolean, props
         throw new Error("No view found");
       }
       throw new Error("No 404 view found", {
-        cause: `Be sure to create an \"errors/404.${routerConfig.defaultViewExtension}\" file in your views folder.`
+        cause: `Be sure to create an \"errors/404.${routerConfig.viewsExtension}\" file in your views folder.`
       });
     }
 
     const viewModule = await routerConfig.views[viewPath]();
+
+    // Cache the view module
+    routerConfig.viewsCache.set(viewPath, viewModule);
 
     return { viewModule, auth: auth || false, props, params };
   } catch (e) {

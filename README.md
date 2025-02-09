@@ -8,12 +8,14 @@ OKP Router is a lightweight routing solution specifically designed for Vite-base
    - Build-in language handling
    - URL-based language switching
    - Configurable default and supported languages
+   - Automatic fallback to default language
 2. **Dynamic routes**
    - Nested route support
    - Parameter handling in URLs
    - Automatic 404 handling
 3. **View management**
    - Lazy loading of views
+   - Caching of views
    - Automatic view resolution
    - Props and parameters passing
 
