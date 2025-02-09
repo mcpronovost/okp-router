@@ -2,10 +2,16 @@
 
 import type {
   RouterConfigType,
-  RouteConfigType,
-  RouteModuleType,
+  RouteType,
+  RouteModulesType,
   RouteHelpersType,
 } from "./types";
+
+/**
+ * Router version
+ * @type {string}
+ */
+export const version: string = "0.1.1";
 
 /**
  * Configure router settings
@@ -13,33 +19,40 @@ import type {
  */
 export const routerConfig = {
   defaultLang: "en",
-  routes: {} as Record<string, RouteModuleType>,
+  routes: {} as Record<string, RouteType>,
+  routeModules: {} as RouteModulesType,
 };
 
 /**
  * Initialize router with custom configuration
  * @param {Object} config - Configuration object
  * @param {string} config.defaultLang - Default language code
- * @param {Record<string, RouteModuleType>} config.routes - Routes configuration
+ * @param {Record<string, RouteType>} config.routes - Routes configuration
  */
 export const initRouter = (config: Partial<RouterConfigType> = {}): void => {
   Object.assign(routerConfig, config);
 };
 
 /**
- * Automatically import all route files and combine them into a single object
- * @returns {Object} - A single object containing all routes
+ * Get all routes
+ * @param {RouteModuleType} modules - All routes modules
+ * @returns {Record<string, RouteType>} - All routes
  */
-const routeModules = routerConfig.routes || import.meta.glob<RouteModuleType>("@/routes/*.js", {
-  eager: true,
-});
+export const getRoutes = (modules?: RouteModulesType | undefined): Record<string, RouteType> => {
+  if (modules || routerConfig.routeModules) {
+    return (() => {
+      return Object.values(
+        modules || routerConfig.routeModules
+      ).reduce<Record<string, RouteType>>((acc, module) => {
+        const firstRoute = Object.values(module)[0] as unknown as Record<string, RouteType>;
+        return { ...acc, ...firstRoute };
+      }, {});
+    })()
+  }
+  return routerConfig.routes;
+};
 
-export const routes: Record<string, RouteConfigType> = Object.values(
-  routeModules
-).reduce<Record<string, RouteConfigType>>((acc, module) => {
-  const firstRoute = Object.values(module)[0] as unknown as Record<string, RouteConfigType>;
-  return { ...acc, ...firstRoute };
-}, {});
+export const routes = getRoutes();
 
 /**
  * Recursively finds a route by matching the URI to translations in the route map
@@ -52,9 +65,9 @@ export const routes: Record<string, RouteConfigType> = Object.values(
 export const findRoute = (
   uri: string,
   lang: string,
-  routesList?: Record<string, RouteConfigType>,
+  routesList?: Record<string, RouteType>,
   parentPath: string = ""
-): [string, RouteConfigType] => {
+): [string, RouteType] => {
   if (!routesList) routesList = routes;
   if (uri === "/") uri = "";
   const params = {};
