@@ -1,5 +1,9 @@
 export interface RouterConfigType {
   defaultLang: string;
+  supportedLangs: string[];
+  routes: Record<string, RouteType>;
+  routeModules?: Record<string, RouteModulesType> | undefined;
+  views: Record<string, ViewModulesType>;
 }
 
 export interface RouteType {
@@ -15,6 +19,10 @@ export interface RouteModulesType {
   [filePath: string]: {
     routes: Record<string, RouteType>;
   };
+}
+
+export interface ViewModulesType {
+  [filePath: string]: () => Promise<any>;
 }
 
 export interface RouteHelpersType {

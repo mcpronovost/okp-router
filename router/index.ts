@@ -4,6 +4,7 @@ import type {
   RouterConfigType,
   RouteType,
   RouteModulesType,
+  ViewModulesType,
   RouteHelpersType,
 } from "./types";
 
@@ -11,7 +12,7 @@ import type {
  * Router version
  * @type {string}
  */
-export const version: string = "0.1.1";
+export const version: string = "0.2.0";
 
 /**
  * Configure router settings
@@ -19,8 +20,10 @@ export const version: string = "0.1.1";
  */
 export const routerConfig = {
   defaultLang: "en",
+  supportedLangs: ["en"],
   routes: {} as Record<string, RouteType>,
-  routeModules: {} as RouteModulesType,
+  routeModules: undefined,
+  views: {} as ViewModulesType,
 };
 
 /**
@@ -42,7 +45,7 @@ export const getRoutes = (modules?: RouteModulesType | undefined): Record<string
   if (modules || routerConfig.routeModules) {
     return (() => {
       return Object.values(
-        modules || routerConfig.routeModules
+        modules || routerConfig.routeModules || {}
       ).reduce<Record<string, RouteType>>((acc, module) => {
         const firstRoute = Object.values(module)[0] as unknown as Record<string, RouteType>;
         return { ...acc, ...firstRoute };
@@ -52,7 +55,69 @@ export const getRoutes = (modules?: RouteModulesType | undefined): Record<string
   return routerConfig.routes;
 };
 
-export const routes = getRoutes();
+export const getViews = (): ViewModulesType | null => {
+  if (!Object.keys(routerConfig.views).length) {
+    showRouterError(
+      "No views found",
+      "Please check router config or your views folder and make sure it contains the correct " +
+      "files."
+    );
+    return null;
+  }
+  return routerConfig.views;
+};
+
+export const getView = async (): Promise<{ viewModule: any, props: any, params: any }> => {
+  const nullView = { viewModule: {default: () => null}, props: null, params: null }
+  const documentLang = document.documentElement.lang;
+  const currentPath = window.location.pathname
+  const [, langCode, ...uriParts] = currentPath.split(/^\/([a-z]{2})\//);
+  const uri = uriParts.join("/");
+
+  try {
+    // If the language is not supported, redirect to the default language
+    if (!langCode || !routerConfig.supportedLangs.includes(langCode)) {
+      window.location.href = `/${routerConfig.defaultLang}/${uri || currentPath.replace(/^\//, "")}`;
+      throw new Error("Language not supported");
+    }
+
+    // If the document language is not the current language, change the language
+    if (documentLang !== langCode) {
+      document.documentElement.lang = langCode;
+    }
+
+    const route = findRoute(uri, langCode);
+
+    // If no route found, redirect to the 404 page
+    if (!route && !currentPath.endsWith(`/${langCode}/404`)) {
+      window.location.href = `/${langCode}/404`;
+      throw new Error("No route found");
+    }
+
+    const [_, { view, auth, props, params }] = route;
+    const viewPath = `./views/${view}.jsx`;
+
+    // If no view found, redirect to the 404 page
+    if (!routerConfig.views[viewPath]) {
+      if (!currentPath.endsWith(`/${langCode}/404`)) {
+        window.location.href = `/${langCode}/404`;
+        throw new Error("No view found");
+      }
+      throw new Error("No 404 view found", {
+        cause: "Be sure to create an \"errors/404.jsx\" file in your views folder."
+      });
+    }
+
+    const viewModule = await routerConfig.views[viewPath]();
+
+    return { viewModule, props, params };
+  } catch (e) {
+    if (e instanceof Error && e.cause) {
+      showRouterError(e.message, e.cause as string);
+    }
+    return nullView;
+  }
+}
 
 /**
  * Recursively finds a route by matching the URI to translations in the route map
@@ -68,7 +133,7 @@ export const findRoute = (
   routesList?: Record<string, RouteType>,
   parentPath: string = ""
 ): [string, RouteType] => {
-  if (!routesList) routesList = routes;
+  if (!routesList) routesList = getRoutes();
   if (uri === "/") uri = "";
   const params = {};
 
@@ -172,7 +237,7 @@ export const findLocaleRoute = (
 
   // Split the route path to handle nested routes
   const routeParts = routePath.split(".");
-  let routesList = routes;
+  let routesList = getRoutes();
   let toPath = "";
 
   // Build the new path by traversing the route tree
@@ -208,4 +273,18 @@ export const getRoute = (
     r: (uri: string, params?: Record<string, string>) =>
       findLocaleRoute(uri, "en", toLang, params),
   };
+};
+
+const showRouterError = (title: string = "An error occurred", message?: string) => {
+  console.error(title);
+  window.document.body.innerHTML =
+  "<div style=\"" +
+  "background-color: #522; border-radius: 12px;" +
+  "color: #D44; font-family: monospace; text-align: center;" +
+  "max-width: 400px;" +
+  "padding: 20px; margin: 32px auto;" +
+  "\">" +
+  "<h1>" + title + "</h1>" +
+  (message ? "<p>" + message + "</p>" : "") +
+  "</div>";
 };

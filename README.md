@@ -5,7 +5,7 @@ OKP Router for Vite-based projects.
 ## Installation
 
 ```bash
-npm install @mcpronovost/okp-router
+npm i @mcpronovost/okp-router
 ```
 
 ## Configuration
@@ -20,24 +20,59 @@ initRouter({
       component: "Home",
     },
   },
+  views: {
+    "./views/Home.jsx": () => import("./views/Home.jsx"),
+  },
 });
 ```
 
-## Usage
+or
 
 ```ts
-import { findRoute } from "@mcpronovost/okp-router";
+import { initRouter } from "@mcpronovost/okp-router";
 
-const [OkpView, setOkpView] = useState(null);
+initRouter({
+  defaultLang: import.meta.env.VITE_DEFAULT_LANGUAGE,
+  routeModules: import.meta.glob("./routes/**/*.js", {
+    eager: true,
+  }),
+  views: import.meta.glob("./views/**/*.jsx", {
+    eager: false,
+  })
+});
+```
 
-const route = findRoute("/", "en");
-const [_, { view }] = route;
-const viewPath = `./views/${view}.jsx`;
-const viewModule = await views[viewPath]();
+## Example Usage
 
-setOkpView(() => viewModule.default);
+```ts
+import { useEffect, useState } from "react";
+import { getView } from "@mcpronovost/okp-router";
+import Loading from "@/views/Loading";
 
-return <OkpView />;
+function App() {
+  const [View, setView] = useState(null);
+  const [viewProps, setViewProps] = useState({});
+  const [viewParams, setViewParams] = useState({});
+
+  const initView = async () => {
+    const { viewModule, props, params } = await getView();
+
+    setViewProps(props);
+    setViewParams(params);
+
+    setView(() => viewModule.default);
+  };
+
+  useEffect(() => {
+    initView();
+  }, []);
+
+  if (View) {
+    return <View {...viewProps} {...viewParams} />;
+  }
+
+  return <Loading />;
+}
 ```
 
 ## Peer Dependencies
