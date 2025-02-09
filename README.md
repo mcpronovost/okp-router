@@ -15,13 +15,36 @@ import { initRouter } from "@mcpronovost/okp-router";
 
 initRouter({
   defaultLang: "en",
+  supportedLangs: ["en", "fr"],
   routes: {
-    "/": {
-      component: "Home",
+    home: {
+      view: "Home",
+      paths: {
+        en: "",
+        fr: "",
+      },
+    },
+    settings: {
+      view: "Settings",
+      paths: {
+        en: "settings",
+        fr: "parametres",
+      },
+      children: {
+        edit: {
+          view: "SettingsEdit",
+          paths: {
+            en: "settings/{settingId}/edit",
+            fr: "parametres/{settingId}/modifier",
+          },
+        },
+      },
     },
   },
   views: {
     "./views/Home.jsx": () => import("./views/Home.jsx"),
+    "./views/Settings.jsx": () => import("./views/Settings.jsx"),
+    "./views/Settings/Edit.jsx": () => import("./views/Settings/Edit.jsx"),
   },
 });
 ```
@@ -33,6 +56,7 @@ import { initRouter } from "@mcpronovost/okp-router";
 
 initRouter({
   defaultLang: import.meta.env.VITE_DEFAULT_LANGUAGE,
+  supportedLangs: import.meta.env.VITE_SUPPORTED_LANGUAGES.split(","),
   routeModules: import.meta.glob("./routes/**/*.js", {
     eager: true,
   }),

@@ -12,7 +12,7 @@ import type {
  * Router version
  * @type {string}
  */
-export const version: string = "0.2.0";
+export const version: string = "0.2.1";
 
 /**
  * Configure router settings
@@ -38,7 +38,7 @@ export const initRouter = (config: Partial<RouterConfigType> = {}): void => {
 
 /**
  * Get all routes
- * @param {RouteModuleType} modules - All routes modules
+ * @param {RouteModulesType | undefined} modules - All routes modules
  * @returns {Record<string, RouteType>} - All routes
  */
 export const getRoutes = (modules?: RouteModulesType | undefined): Record<string, RouteType> => {
@@ -55,6 +55,10 @@ export const getRoutes = (modules?: RouteModulesType | undefined): Record<string
   return routerConfig.routes;
 };
 
+/**
+ * Get all views
+ * @returns {ViewModulesType | null} - All views
+ */
 export const getViews = (): ViewModulesType | null => {
   if (!Object.keys(routerConfig.views).length) {
     showRouterError(
@@ -67,6 +71,10 @@ export const getViews = (): ViewModulesType | null => {
   return routerConfig.views;
 };
 
+/**
+ * Get the current view
+ * @returns {Promise<{ viewModule: any, props: any, params: any } | null>} - The current view
+ */
 export const getView = async (): Promise<{ viewModule: any, props: any, params: any }> => {
   const nullView = { viewModule: {default: () => null}, props: null, params: null }
   const documentLang = document.documentElement.lang;
@@ -275,6 +283,11 @@ export const getRoute = (
   };
 };
 
+/**
+ * Show a router error
+ * @param {string} title - The title of the error
+ * @param {string} message - The message of the error
+ */
 const showRouterError = (title: string = "An error occurred", message?: string) => {
   console.error(title);
   window.document.body.innerHTML =
