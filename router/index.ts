@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 
 import type {
+  VersionType,
   RouterConfigType,
   RouterRegex,
   RouteType,
@@ -10,15 +11,15 @@ import type {
 } from "./types";
 
 /**
- * Router version
- * @type {string}
+ * Router version number
+ * @since 0.1.1
  */
-export const version: string = "0.2.4";
+export const version: VersionType = "0.2.5";
 
 /**
  * Core router configuration
  * Default settings that can be overridden via initRouter()
- * @type {Object}
+ * @since 0.1.0
  */
 export const routerConfig: RouterConfigType = {
   defaultLang: "en",
@@ -32,7 +33,7 @@ export const routerConfig: RouterConfigType = {
 
 /**
  * Constants for route parsing
- * @type {Object}
+ * @since 0.2.5
  */
 const REGEX: RouterRegex = {
   LANG_CODE: /^\/([a-z]{2})\//,
@@ -42,9 +43,23 @@ const REGEX: RouterRegex = {
 
 /**
  * Initialize router with custom configuration
- * @param {Object} config - Configuration object
- * @param {string} config.defaultLang - Default language code
- * @param {Record<string, RouteType>} config.routes - Routes configuration
+ * @param config Configuration object
+ * @param config.defaultLang Default language code
+ * @param config.supportedLangs Array of supported languages
+ * @param config.routes Routes configuration
+ * @param config.routeModules Route modules from Vite's glob import
+ * @param config.views View modules from Vite's glob import
+ * @param config.viewsCache Views cache
+ * @param config.viewsExtension Views extension
+ * @example
+ * ```ts
+ * initRouter({
+ *   defaultLang: "en",
+ *   routes: { home: { view: "Home", paths: { en: "/home", fr: "/accueil" } } },
+ *   views: { home: () => import("./views/Home.jsx") },
+ * });
+ * ```
+ * @since 0.1.0
  */
 export const initRouter = (config: Partial<RouterConfigType> = {}): void => {
   Object.assign(routerConfig, config);
@@ -52,8 +67,9 @@ export const initRouter = (config: Partial<RouterConfigType> = {}): void => {
 
 /**
  * Get all routes
- * @param {RouteModulesType | undefined} modules - All routes modules
- * @returns {Record<string, RouteType>} - All routes
+ * @param modules Route modules from Vite's glob import
+ * @returns Object with all routes
+ * @since 0.1.1
  */
 export const getRoutes = (modules?: RouteModulesType | undefined): Record<string, RouteType> => {
   if (modules || routerConfig.routeModules) {
@@ -71,7 +87,8 @@ export const getRoutes = (modules?: RouteModulesType | undefined): Record<string
 
 /**
  * Get all views
- * @returns {ViewModulesType | null} - All views
+ * @returns Object with all views
+ * @since 0.2.0
  */
 export const getViews = (): ViewModulesType | null => {
   if (!Object.keys(routerConfig.views).length) {
@@ -87,7 +104,8 @@ export const getViews = (): ViewModulesType | null => {
 
 /**
  * Get the current view
- * @returns {Promise<{viewModule: { default: any }; auth: boolean; props: Record<string, any> | null; params: Record<string, string> | null;} | null>} - The current view
+ * @returns A promise with the current view module, auth, props and params
+ * @since 0.2.0
  */
 export const getView = async (): Promise<{
   viewModule: { default: any };
@@ -164,11 +182,12 @@ export const getView = async (): Promise<{
 
 /**
  * Recursively finds a route by matching the URI to translations in the route map
- * @param uri - The URI path to match against route translations
- * @param lang - The language code to use for matching (e.g., "en" or "fr")
- * @param routesList - Optional route map to search through. Defaults to global routes if not provided
- * @param parentPath - Optional dot-notation path of parent routes. Used internally for recursion
+ * @param uri The URI path to match against route translations
+ * @param lang The language code to use for matching (e.g., "en" or "fr")
+ * @param routesList Optional route map to search through. Defaults to global routes if not provided
+ * @param parentPath Optional dot-notation path of parent routes. Used internally for recursion
  * @returns A tuple containing [fullRoutePath, routeObject] if found, undefined otherwise
+ * @since 0.1.0
  */
 export const findRoute = (
   uri: string,
@@ -260,10 +279,11 @@ export const findRoute = (
 
 /**
  * Translates a route URI from one language to another
- * @param uri - The current URI path
- * @param fromLang - The language code of the current URI
- * @param toLang - The target language code to translate the URI to
+ * @param uri The current URI path
+ * @param fromLang The language code of the current URI
+ * @param toLang The target language code to translate the URI to
  * @returns The translated URI path in the new language, or the original URI if no translation is found
+ * @since 0.1.0
  */
 export const findLocaleRoute = (
   uri: string,
@@ -306,8 +326,9 @@ export const findLocaleRoute = (
 
 /**
  * Get the route object for the target language
- * @param toLang - The target language code to use for the route (e.g., "en" or "fr")
+ * @param toLang The target language code to use for the route (e.g., "en" or "fr")
  * @returns An object containing the route functions for the target language
+ * @since 0.1.0
  */
 export const getRoute = (
   toLang: string = routerConfig.defaultLang
@@ -320,8 +341,9 @@ export const getRoute = (
 
 /**
  * Show a router error
- * @param {string} title - The title of the error
- * @param {string} message - The message of the error
+ * @param title The title of the error
+ * @param message The message of the error
+ * @since 0.2.0
  */
 const showRouterError = (title: string = "An error occurred", message?: string) => {
   console.error(title);

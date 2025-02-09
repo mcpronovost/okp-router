@@ -1,3 +1,5 @@
+export type VersionType = `${number}.${number}.${number}`;
+
 export interface RouterConfigType {
   defaultLang: string;
   supportedLangs: string[];
