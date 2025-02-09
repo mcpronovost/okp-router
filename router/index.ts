@@ -24,7 +24,7 @@ export const routerConfig = {
   routes: {} as Record<string, RouteType>,
   routeModules: undefined,
   views: {} as ViewModulesType,
-  viewsCache: new Map<string, any>(),
+  viewsCache: new Map<string, { default: any }>(),
   viewsExtension: "jsx",
 };
 
@@ -75,9 +75,14 @@ export const getViews = (): ViewModulesType | null => {
 
 /**
  * Get the current view
- * @returns {Promise<{ viewModule: any, auth: boolean, props: any, params: any } | null>} - The current view
+ * @returns {Promise<{viewModule: { default: any }; auth: boolean; props: Record<string, any> | null; params: Record<string, string> | null;} | null>} - The current view
  */
-export const getView = async (): Promise<{ viewModule: any, auth: boolean, props: any, params: any }> => {
+export const getView = async (): Promise<{
+  viewModule: { default: any };
+  auth: boolean;
+  props: Record<string, any> | null;
+  params: Record<string, string> | null;
+}> => {
   const nullView = { viewModule: {default: () => null}, auth: false, props: null, params: null }
   const documentLang = document.documentElement.lang;
   const currentPath = window.location.pathname

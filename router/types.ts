@@ -4,6 +4,8 @@ export interface RouterConfigType {
   routes: Record<string, RouteType>;
   routeModules?: Record<string, RouteModulesType> | undefined;
   views: Record<string, ViewModulesType>;
+  viewsCache: Map<string, { default: any }>;
+  viewsExtension: string;
 }
 
 export interface RouteType {
@@ -22,7 +24,7 @@ export interface RouteModulesType {
 }
 
 export interface ViewModulesType {
-  [filePath: string]: () => Promise<any>;
+  [filePath: string]: () => Promise<{ default: any }>;
 }
 
 export interface RouteHelpersType {
