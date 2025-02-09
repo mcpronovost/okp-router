@@ -12,7 +12,7 @@ import type {
  * Router version
  * @type {string}
  */
-export const version: string = "0.2.1";
+export const version: string = "0.2.2";
 
 /**
  * Configure router settings
