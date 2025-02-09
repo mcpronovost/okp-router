@@ -3,10 +3,16 @@ export interface RouterConfigType {
   supportedLangs: string[];
   routes: Record<string, RouteType>;
   routeModules?: Record<string, RouteModulesType> | undefined;
-  views: Record<string, ViewModulesType>;
+  views: ViewModulesType;
   viewsCache: Map<string, { default: any }>;
   viewsExtension: string;
 }
+
+export interface RouterRegex {
+  LANG_CODE: RegExp;
+  PARAM: RegExp;
+  PARAM_REPLACE: RegExp;
+};
 
 export interface RouteType {
   view: string;

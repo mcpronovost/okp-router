@@ -2,6 +2,7 @@
 
 import type {
   RouterConfigType,
+  RouterRegex,
   RouteType,
   RouteModulesType,
   ViewModulesType,
@@ -15,10 +16,11 @@ import type {
 export const version: string = "0.2.4";
 
 /**
- * Configure router settings
+ * Core router configuration
+ * Default settings that can be overridden via initRouter()
  * @type {Object}
  */
-export const routerConfig = {
+export const routerConfig: RouterConfigType = {
   defaultLang: "en",
   supportedLangs: ["en"],
   routes: {} as Record<string, RouteType>,
@@ -26,6 +28,16 @@ export const routerConfig = {
   views: {} as ViewModulesType,
   viewsCache: new Map<string, { default: any }>(),
   viewsExtension: "jsx",
+};
+
+/**
+ * Constants for route parsing
+ * @type {Object}
+ */
+const REGEX: RouterRegex = {
+  LANG_CODE: /^\/([a-z]{2})\//,
+  PARAM: /{([^}]+)}/g,
+  PARAM_REPLACE: /{[^}]+}/g,
 };
 
 /**
@@ -83,10 +95,17 @@ export const getView = async (): Promise<{
   props: Record<string, any> | null;
   params: Record<string, string> | null;
 }> => {
-  const nullView = { viewModule: {default: () => null}, auth: false, props: null, params: null }
-  const documentLang = document.documentElement.lang;
+  const DEFAULT_NULL_VIEW = {
+    viewModule: { default: () => null },
+    auth: false,
+    props: null,
+    params: null
+  };
+
+  const documentElement = document.documentElement;
+  const documentLang = documentElement.lang;
   const currentPath = window.location.pathname
-  const [, langCode, ...uriParts] = currentPath.split(/^\/([a-z]{2})\//);
+  const [, langCode, ...uriParts] = currentPath.split(REGEX.LANG_CODE);
   const uri = uriParts.join("/");
 
   try {
@@ -98,7 +117,7 @@ export const getView = async (): Promise<{
 
     // If the document language is not the current language, change the language
     if (documentLang !== langCode) {
-      document.documentElement.lang = langCode;
+      documentElement.lang = langCode;
     }
 
     const route = findRoute(uri, langCode);
@@ -114,8 +133,8 @@ export const getView = async (): Promise<{
 
     // Check cache first
     if (routerConfig.viewsCache.has(viewPath)) {
-      const viewModule = routerConfig.viewsCache.get(viewPath);
-      return { viewModule, auth: auth || false, props, params };
+      const viewModule = routerConfig.viewsCache.get(viewPath) as { default: any };
+      return { viewModule, auth: auth || false, props: props || null, params: params || null };
     }
 
     // If no view found, redirect to the 404 page
@@ -134,12 +153,12 @@ export const getView = async (): Promise<{
     // Cache the view module
     routerConfig.viewsCache.set(viewPath, viewModule);
 
-    return { viewModule, auth: auth || false, props, params };
+    return { viewModule, auth: auth || false, props: props || null, params: params || null };
   } catch (e) {
     if (e instanceof Error && e.cause) {
       showRouterError(e.message, e.cause as string);
     }
-    return nullView;
+    return DEFAULT_NULL_VIEW;
   }
 }
 
@@ -168,10 +187,10 @@ export const findRoute = (
     // Handle dynamic path segments
     if (routePath.includes("{")) {
       // Extract parameter names from the route path
-      const paramNames = [...routePath.matchAll(/{([^}]+)}/g)].map(
+      const paramNames = [...routePath.matchAll(REGEX.PARAM)].map(
         (match) => match[1]
       );
-      const pathPattern = routePath.replace(/{[^}]+}/g, "([^/]+)");
+      const pathPattern = routePath.replace(REGEX.PARAM, "([^/]+)");
       const regex = new RegExp(`^${pathPattern}$`);
       const matches = uri.match(regex);
 
@@ -192,7 +211,7 @@ export const findRoute = (
       if (
         uri.startsWith(childUri) ||
         (routePath.includes("{") &&
-          new RegExp(`^${routePath.replace(/{[^}]+}/g, "[^/]+")}/`).test(uri))
+          new RegExp(`^${routePath.replace(REGEX.PARAM_REPLACE, "[^/]+")}/`).test(uri))
       ) {
         const nextParentPath = parentPath ? `${parentPath}.${key}` : key;
 
@@ -201,7 +220,7 @@ export const findRoute = (
           const paramNames = [...routePath.matchAll(/{([^}]+)}/g)].map(
             (match) => match[1]
           );
-          const pathPattern = routePath.replace(/{[^}]+}/g, "([^/]+)");
+          const pathPattern = routePath.replace(REGEX.PARAM_REPLACE, "([^/]+)");
           const matches = uri.match(new RegExp(`^${pathPattern}/`));
           if (matches) {
             paramNames.forEach((name, index) => {
