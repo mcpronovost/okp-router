@@ -1,4 +1,4 @@
-# okp-router &middot; [![npm version](https://img.shields.io/npm/v/@mcpronovost/okp-router.svg?style=flat)](https://www.npmjs.com/package/@mcpronovost/okp-router) [![npm license](https://img.shields.io/npm/l/@mcpronovost/okp-router?color=%231081c2)](https://github.com/mcpronovost/okp-router/blob/main/LICENSE) &middot; ![made in Canada](https://img.shields.io/badge/made%20in-Canada-red) ![made in Québec](https://img.shields.io/badge/fait%20au-Québec-blue)
+# okp-router &middot; [![npm version](https://img.shields.io/npm/v/@mcpronovost/okp-router.svg?style=flat)](https://www.npmjs.com/package/@mcpronovost/okp-router) [![npm license](https://img.shields.io/npm/l/@mcpronovost/okp-router?color=%231081c2)](https://github.com/mcpronovost/okp-router/blob/main/LICENSE) &middot; [![made in Canada](https://img.shields.io/badge/made%20in-Canada-red)](#) [![made in Québec](https://img.shields.io/badge/fait%20au-Québec-blue)](#)
 
 OKP Router is a lightweight routing solution specifically designed for Vite-based projects with multilingual support.
 
