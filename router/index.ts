@@ -14,7 +14,7 @@ import type {
  * Router version number
  * @since 0.1.1
  */
-export const version: VersionType = "0.2.6";
+export const version: VersionType = "0.3.0";
 
 /**
  * Core router configuration
@@ -191,7 +191,7 @@ export const getView = async (): Promise<{
  */
 export const findRoute = (
   uri: string,
-  lang: string,
+  lang: string = routerConfig.defaultLang,
   routesList?: Record<string, RouteType>,
   parentPath: string = ""
 ): [string, RouteType] => {
@@ -204,7 +204,7 @@ export const findRoute = (
     const routePath = route.paths[lang];
 
     // Handle dynamic path segments
-    if (routePath.includes("{")) {
+    if (routePath.toString().includes("{")) {
       // Extract parameter names from the route path
       const paramNames = [...routePath.matchAll(REGEX.PARAM)].map(
         (match) => match[1]
@@ -287,8 +287,8 @@ export const findRoute = (
  */
 export const findLocaleRoute = (
   uri: string,
-  fromLang: string,
-  toLang: string,
+  fromLang: string = "en",
+  toLang: string = routerConfig.defaultLang,
   additionalParams?: Record<string, string>
 ): string => {
   // Find the current route based on the URI and current language
