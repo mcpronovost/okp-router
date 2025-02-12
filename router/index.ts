@@ -14,7 +14,7 @@ import type {
  * Router version number
  * @since 0.1.1
  */
-export const version: VersionType = "0.2.5";
+export const version: VersionType = "0.2.6";
 
 /**
  * Core router configuration
@@ -325,6 +325,12 @@ export const findLocaleRoute = (
 };
 
 /**
+ * Alias for findLocaleRoute
+ * @since 0.2.6
+ */
+export const r = findLocaleRoute;
+
+/**
  * Get the route object for the target language
  * @param toLang The target language code to use for the route (e.g., "en" or "fr")
  * @returns An object containing the route functions for the target language
@@ -334,8 +340,7 @@ export const getRoute = (
   toLang: string = routerConfig.defaultLang
 ): RouteHelpersType => {
   return {
-    r: (uri: string, params?: Record<string, string>) =>
-      findLocaleRoute(uri, "en", toLang, params),
+    r: (uri: string, params?: Record<string, string>) => r(uri, "en", toLang, params),
   };
 };
 
