@@ -14,7 +14,7 @@ import type {
  * Router version number
  * @since 0.1.1
  */
-export const version: VersionType = "0.3.0";
+export const version: VersionType = "0.3.1";
 
 /**
  * Core router configuration
@@ -23,6 +23,7 @@ export const version: VersionType = "0.3.0";
  */
 export const routerConfig: RouterConfigType = {
   defaultLang: "en",
+  currentLang: "en",
   supportedLangs: ["en"],
   routes: {} as Record<string, RouteType>,
   routeModules: undefined,
@@ -45,6 +46,7 @@ const REGEX: RouterRegex = {
  * Initialize router with custom configuration
  * @param config Configuration object
  * @param config.defaultLang Default language code
+ * @param config.currentLang Current language code
  * @param config.supportedLangs Array of supported languages
  * @param config.routes Routes configuration
  * @param config.routeModules Route modules from Vite's glob import
@@ -138,6 +140,11 @@ export const getView = async (): Promise<{
       documentElement.lang = langCode;
     }
 
+    // If the current language is not the language code, change the current language
+    if (langCode !== routerConfig.currentLang) {
+      routerConfig.currentLang = langCode;
+    }
+
     const route = findRoute(uri, langCode);
 
     // If no route found, redirect to the 404 page
@@ -191,7 +198,7 @@ export const getView = async (): Promise<{
  */
 export const findRoute = (
   uri: string,
-  lang: string = routerConfig.defaultLang,
+  lang: string = routerConfig.currentLang || routerConfig.defaultLang,
   routesList?: Record<string, RouteType>,
   parentPath: string = ""
 ): [string, RouteType] => {
@@ -288,7 +295,7 @@ export const findRoute = (
 export const findLocaleRoute = (
   uri: string,
   fromLang: string = "en",
-  toLang: string = routerConfig.defaultLang,
+  toLang: string = routerConfig.currentLang || routerConfig.defaultLang,
   additionalParams?: Record<string, string>
 ): string => {
   // Find the current route based on the URI and current language
@@ -337,7 +344,7 @@ export const r = findLocaleRoute;
  * @since 0.1.0
  */
 export const getRoute = (
-  toLang: string = routerConfig.defaultLang
+  toLang: string = routerConfig.currentLang || routerConfig.defaultLang
 ): RouteHelpersType => {
   return {
     r: (uri: string, params?: Record<string, string>) => r(uri, "en", toLang, params),

@@ -2,6 +2,7 @@ export type VersionType = `${number}.${number}.${number}`;
 
 export interface RouterConfigType {
   defaultLang: string;
+  currentLang: string;
   supportedLangs: string[];
   routes: Record<string, RouteType>;
   routeModules?: Record<string, RouteModulesType> | undefined;

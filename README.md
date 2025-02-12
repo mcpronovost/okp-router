@@ -32,6 +32,7 @@ npm i @mcpronovost/okp-router
 ```ts
 {
   defaultLang: "en",
+  currentLang: "en",
   supportedLangs: ["en"],
   viewExtension: "jsx",
   routes: {},
@@ -49,6 +50,7 @@ import { initRouter } from "@mcpronovost/okp-router";
 
 initRouter({
   defaultLang: "en",
+  currentLang: "en",
   supportedLangs: ["en", "fr"],
   viewExtension: "jsx",
   routes: {
@@ -93,6 +95,7 @@ import { initRouter } from "@mcpronovost/okp-router";
 
 initRouter({
   defaultLang: "en",
+  currentLang: "fr",
   supportedLangs: ["en", "fr"],
   viewExtension: "tsx",
   routeModules: import.meta.glob("./routes/**/*.js", {
