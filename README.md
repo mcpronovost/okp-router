@@ -130,6 +130,8 @@ initRouter({
 
 ## Example Usage
 
+Get the current view and its parameters based on the current URL.
+
 ```ts
 import { useEffect, useState } from "react";
 import { getView } from "@mcpronovost/okp-router";
@@ -158,6 +160,40 @@ function App() {
   }
 
   return <Loading />;
+}
+```
+
+Use the route key to get the translated URL for the current language.
+
+```ts
+import { r } from "@mcpronovost/okp-router";
+
+export default function Home() {
+  return (
+    <div>
+      <h1>Home</h1>
+      <p>Welcome to the home page</p>
+      <a href={r("devblog")}>Go to Devblog</a>
+    </div>
+  );
+}
+```
+
+Use the route key to get the translated URL for a specific language.
+
+```ts
+import { getRoute } from "@mcpronovost/okp-router";
+
+export default function Home() {
+  const { r } = getRoute("fr");
+
+  return (
+    <div>
+      <h1>Home</h1>
+      <p>Welcome to the home page</p>
+      <a href={r("devblog")}>Go to Devblog</a>
+    </div>
+  );
 }
 ```
 
