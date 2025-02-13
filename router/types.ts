@@ -8,6 +8,7 @@ export interface RouterConfigType {
   routeModules?: Record<string, RouteModulesType> | undefined;
   views: ViewModulesType;
   viewsCache: Map<string, { default: any }>;
+  viewsPath: string;
   viewsExtension: string;
 }
 

@@ -14,7 +14,7 @@ import type {
  * Router version number
  * @since 0.1.1
  */
-export const version: VersionType = "0.3.1";
+export const version: VersionType = "0.3.2";
 
 /**
  * Core router configuration
@@ -29,6 +29,7 @@ export const routerConfig: RouterConfigType = {
   routeModules: undefined,
   views: {} as ViewModulesType,
   viewsCache: new Map<string, { default: any }>(),
+  viewsPath: "/src/views",
   viewsExtension: "jsx",
 };
 
@@ -52,6 +53,7 @@ const REGEX: RouterRegex = {
  * @param config.routeModules Route modules from Vite's glob import
  * @param config.views View modules from Vite's glob import
  * @param config.viewsCache Views cache
+ * @param config.viewsPath Path to the views folder
  * @param config.viewsExtension Views extension
  * @example
  * ```ts
@@ -154,7 +156,7 @@ export const getView = async (): Promise<{
     }
 
     const [_, { view, auth, props, params }] = route;
-    const viewPath = `./views/${view}.${routerConfig.viewsExtension}`;
+    const viewPath = `${routerConfig.viewsPath}/${view}.${routerConfig.viewsExtension}`;
 
     // Check cache first
     if (routerConfig.viewsCache.has(viewPath)) {

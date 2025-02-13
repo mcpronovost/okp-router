@@ -38,6 +38,8 @@ npm i @mcpronovost/okp-router
   routes: {},
   routeModules: undefined,
   views: {},
+  viewsPath: "/src/views",
+  viewsExtension: "jsx",
 }
 ```
 
@@ -52,6 +54,7 @@ initRouter({
   defaultLang: "en",
   currentLang: "en",
   supportedLangs: ["en", "fr"],
+  viewsPath: "/src/pages",
   viewExtension: "jsx",
   routes: {
     home: {
@@ -97,6 +100,7 @@ initRouter({
   defaultLang: "en",
   currentLang: "fr",
   supportedLangs: ["en", "fr"],
+  viewsPath: "/src/pages",
   viewExtension: "tsx",
   routeModules: import.meta.glob("./routes/**/*.js", {
     eager: true,
