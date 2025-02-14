@@ -39,4 +39,5 @@ export interface ViewModulesType {
 
 export interface RouteHelpersType {
   r: (uri: string, params?: Record<string, string>) => string;
+  switchLang: (toLang: string, additionalParams?: Record<string, string>) => string;
 }

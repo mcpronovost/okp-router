@@ -1,12 +1,18 @@
 import type { RouteHelpersType } from "./types";
 import { routerConfig } from "./config";
-import { getLocalizedRoute } from "./routes";
+import { getLocalizedRoute, switchRouteLanguage } from "./routes";
 
 /**
  * Alias for getLocalizedRoute
  * @since 0.2.6
  */
 export const r = getLocalizedRoute;
+
+/**
+ * Alias for switchRouteLanguage
+ * @since 0.4.1
+ */
+export const switchLang = switchRouteLanguage;
 
 /**
  * Get the router
@@ -22,5 +28,11 @@ export const getRouter = (
   return {
     r: (uri: string, params?: Record<string, string>) =>
       r(uri, toLang, fromLang, params),
+    switchLang: (
+      toLang: string = routerConfig.currentLang ||
+        routerConfig.defaultLang ||
+        "en",
+      additionalParams?: Record<string, string>
+    ) => switchLang(toLang, additionalParams),
   };
 };

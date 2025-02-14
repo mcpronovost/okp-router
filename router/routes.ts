@@ -174,3 +174,24 @@ export const getLocalizedRoute = (
 
   return `/${toLang}/${toPath}`;
 };
+
+/**
+ * Switch the language of the current route
+ * @param toLang The target language
+ * @param additionalParams Optional additional parameters to pass to the new route
+ * @returns The new route path in the target language
+ * @since 0.4.1
+ */
+export const switchRouteLanguage = (
+  toLang: string = routerConfig.currentLang || routerConfig.defaultLang || "en",
+  additionalParams?: Record<string, string>
+): string => {
+  const { langCode, uri } = getLangAndUri(window.location.pathname);
+  const newRoute = getLocalizedRoute(
+    uri,
+    toLang,
+    langCode,
+    additionalParams
+  );
+  return newRoute;
+};

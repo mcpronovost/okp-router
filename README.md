@@ -204,6 +204,14 @@ export default function Home() {
 }
 ```
 
+Switch the language of the current route.
+
+```ts
+import { switchLang } from "@mcpronovost/okp-router";
+
+const newRoute = switchLang("fr");
+```
+
 ## Peer Dependencies
 
 - **[Vite](https://vitejs.dev/)** (version 6 or higher)
