@@ -61,6 +61,6 @@ export const routerConfig: RouterConfigType = {
  * ```
  * @since 0.1.0
  */
-export const initRouter = (config: Partial<RouterConfigType> = {}): void => {
+export const initRouter = async (config: Partial<RouterConfigType> = {}): Promise<void> => {
   Object.assign(routerConfig, config);
 };
