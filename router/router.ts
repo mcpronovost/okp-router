@@ -289,15 +289,15 @@ export const findRoute = (
 /**
  * Translates a route URI from one language to another
  * @param uri The current URI path
- * @param fromLang The language code of the current URI
  * @param toLang The target language code to translate the URI to
+ * @param fromLang The language code of the current URI
  * @returns The translated URI path in the new language, or the original URI if no translation is found
  * @since 0.1.0
  */
 export const findLocaleRoute = (
   uri: string,
-  fromLang: string = "en",
   toLang: string = routerConfig.currentLang || routerConfig.defaultLang,
+  fromLang: string = "en",
   additionalParams?: Record<string, string>
 ): string => {
   // Find the current route based on the URI and current language
@@ -334,26 +334,6 @@ export const findLocaleRoute = (
 };
 
 /**
- * Alias for findLocaleRoute
- * @since 0.2.6
- */
-export const r = findLocaleRoute;
-
-/**
- * Get the route object for the target language
- * @param toLang The target language code to use for the route (e.g., "en" or "fr")
- * @returns An object containing the route functions for the target language
- * @since 0.1.0
- */
-export const getRoute = (
-  toLang: string = routerConfig.currentLang || routerConfig.defaultLang
-): RouteHelpersType => {
-  return {
-    r: (uri: string, params?: Record<string, string>) => r(uri, "en", toLang, params),
-  };
-};
-
-/**
  * Show a router error
  * @param title The title of the error
  * @param message The message of the error
@@ -371,4 +351,24 @@ const showRouterError = (title: string = "An error occurred", message?: string) 
   "<h1>" + title + "</h1>" +
   (message ? "<p>" + message + "</p>" : "") +
   "</div>";
+};
+
+/**
+ * Alias for findLocaleRoute
+ * @since 0.2.6
+ */
+export const r = findLocaleRoute;
+
+/**
+ * Get the route object for the target language
+ * @param toLang The target language code to use for the route (e.g., "en" or "fr")
+ * @returns An object containing the route functions for the target language
+ * @since 0.1.0
+ */
+export const getRoute = (
+  toLang: string = routerConfig.currentLang || routerConfig.defaultLang
+): RouteHelpersType => {
+  return {
+    r: (uri: string, params?: Record<string, string>) => r(uri, toLang, "en", params),
+  };
 };
