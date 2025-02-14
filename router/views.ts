@@ -1,7 +1,7 @@
 import type { ViewModulesType } from "./types";
 import { routerConfig, REGEX } from "./config";
 import { getRoute } from "./routes";
-import { showRouterError } from "./utils";
+import { getLangAndUri, showRouterError } from "./utils";
 
 /**
  * Get all views
@@ -41,8 +41,7 @@ export const getView = async (): Promise<{
   const documentElement = document.documentElement;
   const documentLang = documentElement.lang;
   const currentPath = window.location.pathname;
-  const [, langCode, ...uriParts] = currentPath.split(REGEX.LANG_CODE);
-  const uri = uriParts.join("/");
+  const { langCode, uri } = getLangAndUri(currentPath);
 
   try {
     // If the language is not supported, redirect to the default language

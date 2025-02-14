@@ -1,3 +1,20 @@
+import { REGEX } from "./config";
+
+/**
+ * Get the language code and URI from a specific path
+ * @param path The specific path of the page
+ * @returns An object containing the language code and URI
+ * @since 0.4.1
+ */
+export const getLangAndUri = (path: string) => {
+  const [, langCode, ...uriParts] = path.split(REGEX.LANG_CODE);
+  const uri = uriParts.join("/");
+  return {
+    langCode,
+    uri,
+  };
+};
+
 /**
  * Show a router error
  * @param title The title of the error
