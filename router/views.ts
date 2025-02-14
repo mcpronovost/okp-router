@@ -12,8 +12,8 @@ export const getViews = (): ViewModulesType | null => {
   if (!Object.keys(routerConfig.views).length) {
     showRouterError(
       "No views found",
-      "Please check router config or your views folder and make sure it contains the correct " +
-        "files."
+      "Please check router config or your views folder " +
+        "and make sure it contains the correct files."
     );
     return null;
   }
@@ -112,6 +112,8 @@ export const getView = async (): Promise<{
   } catch (e) {
     if (e instanceof Error && e.cause) {
       showRouterError(e.message, e.cause as string);
+    } else {
+      showRouterError("An error occurred", e as string);
     }
     return DEFAULT_NULL_VIEW;
   }
