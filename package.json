@@ -1,7 +1,7 @@
 {
   "name": "@mcpronovost/okp-router",
   "description": "A lightweight routing solution specifically designed for Vite-based projects with multilingual support.",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "author": "M-C Pronovost",
   "homepage": "https://github.com/mcpronovost/okp-router",
   "repository": {

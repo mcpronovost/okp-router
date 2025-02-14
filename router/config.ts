@@ -10,7 +10,7 @@ import type {
  * Router version number
  * @since 0.1.1
  */
-export const version: VersionType = "0.3.2";
+export const version: VersionType = "0.4.0";
 
 /**
  * Constants for route parsing
