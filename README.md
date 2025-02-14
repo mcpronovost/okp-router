@@ -50,7 +50,7 @@ Define your routes and views directly in the configuration object.
 ```ts
 import { initRouter } from "@mcpronovost/okp-router";
 
-initRouter({
+await initRouter({
   defaultLang: "en",
   currentLang: "en",
   supportedLangs: ["en", "fr"],
@@ -96,7 +96,7 @@ Use Vite's glob pattern to import routes and views from modules.
 ```ts
 import { initRouter } from "@mcpronovost/okp-router";
 
-initRouter({
+await initRouter({
   defaultLang: "en",
   currentLang: "fr",
   supportedLangs: ["en", "fr"],
