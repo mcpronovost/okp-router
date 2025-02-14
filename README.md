@@ -189,10 +189,10 @@ export default function Home() {
 Use the route key to get the translated URL for a specific language.
 
 ```ts
-import { getRoute } from "@mcpronovost/okp-router";
+import { getRouter } from "@mcpronovost/okp-router";
 
 export default function Home() {
-  const { r } = getRoute("fr");
+  const { r } = getRouter("fr");
 
   return (
     <div>
