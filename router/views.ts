@@ -9,7 +9,7 @@ import { getLangAndUri, showRouterError } from "./utils";
  * @since 0.2.0
  */
 export const getViews = (): ViewModulesType | null => {
-  if (!Object.keys(routerConfig.views).length) {
+  if (!routerConfig.views || !Object.keys(routerConfig.views).length) {
     showRouterError(
       "No views found",
       "Please check router config or your views folder " +
@@ -37,6 +37,25 @@ export const getView = async (): Promise<{
     props: null,
     params: null,
   };
+
+  if (!routerConfig.supportedLangs) {
+    showRouterError("No supported languages found", "Please check your router config.");
+    return DEFAULT_NULL_VIEW;
+  }
+
+  if (!routerConfig.views) {
+    showRouterError("No views found", "Please check your router config.");
+    return DEFAULT_NULL_VIEW;
+  }
+
+  if (!routerConfig.viewsExtensions) {
+    showRouterError("No views extensions found", "Please check your router config.");
+    return DEFAULT_NULL_VIEW;
+  }
+
+  if (!routerConfig.viewsCache) {
+    routerConfig.viewsCache = new Map();
+  }
 
   const documentElement = document.documentElement;
   const documentLang = documentElement.lang;
@@ -71,7 +90,16 @@ export const getView = async (): Promise<{
     }
 
     const [_, { view, auth, props, params }] = route;
-    const viewPath = `${routerConfig.viewsPath}/${view}.${routerConfig.viewsExtension}`;
+
+    // Get the view path with the correct extension
+    let viewPath = "";
+    for (const ext of routerConfig.viewsExtensions) {
+      const potentialPath = `${routerConfig.viewsPath}/${view}.${ext}`;
+      if (routerConfig.views[potentialPath]) {
+        viewPath = potentialPath;
+        break;
+      }
+    }
 
     // Check cache first
     if (routerConfig.viewsCache.has(viewPath)) {
@@ -89,11 +117,11 @@ export const getView = async (): Promise<{
     // If no view found, redirect to the 404 page
     if (!routerConfig.views[viewPath]) {
       if (!currentPath.endsWith(`/${langCode}/404`)) {
-        window.location.href = `/${langCode}/404`;
+        // window.location.href = `/${langCode}/404`;
         throw new Error("No view found");
       }
       throw new Error("No 404 view found", {
-        cause: `Be sure to create an \"errors/404.${routerConfig.viewsExtension}\" file in your views folder.`,
+        cause: `Be sure to create an \"errors/404\" file in your views folder.`,
       });
     }
 

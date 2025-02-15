@@ -39,7 +39,7 @@ npm i @mcpronovost/okp-router
   routeModules: undefined,
   views: {},
   viewsPath: "/src/views",
-  viewsExtension: "jsx",
+  viewsExtensions: ["jsx", "tsx"],
 }
 ```
 
@@ -55,7 +55,7 @@ await initRouter({
   currentLang: "en",
   supportedLangs: ["en", "fr"],
   viewsPath: "/src/pages",
-  viewExtension: "jsx",
+  viewsExtensions: ["jsx", "tsx"],
   routes: {
     home: {
       view: "Home",
@@ -84,7 +84,7 @@ await initRouter({
   views: {
     "./views/Home.jsx": () => import("./views/Home.jsx"),
     "./views/Settings.jsx": () => import("./views/Settings.jsx"),
-    "./views/Settings/Edit.jsx": () => import("./views/Settings/Edit.jsx"),
+    "./views/Settings/Edit.tsx": () => import("./views/Settings/Edit.tsx"),
   },
 });
 ```
@@ -101,11 +101,10 @@ await initRouter({
   currentLang: "fr",
   supportedLangs: ["en", "fr"],
   viewsPath: "/src/pages",
-  viewExtension: "tsx",
   routeModules: import.meta.glob("./routes/**/*.js", {
     eager: true,
   }),
-  views: import.meta.glob("./views/**/*.tsx", {
+  views: import.meta.glob("./views/**/*.{jsx,tsx}", {
     eager: false,
   }),
 });

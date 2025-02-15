@@ -10,7 +10,7 @@ import type {
  * Router version number
  * @since 0.1.1
  */
-export const version: VersionType = "0.4.1";
+export const version: VersionType = "0.4.2";
 
 /**
  * Constants for route parsing
@@ -37,6 +37,7 @@ export const routerConfig: RouterConfigType = {
   viewsCache: new Map<string, { default: any }>(),
   viewsPath: "/src/views",
   viewsExtension: "jsx",
+  viewsExtensions: ["jsx", "tsx"],
 };
 
 /**
@@ -50,7 +51,7 @@ export const routerConfig: RouterConfigType = {
  * @param config.views View modules from Vite's glob import
  * @param config.viewsCache Views cache
  * @param config.viewsPath Path to the views folder
- * @param config.viewsExtension Views extension
+ * @param config.viewsExtensions Views extensions
  * @example
  * ```ts
  * initRouter({

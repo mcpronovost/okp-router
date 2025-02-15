@@ -1,15 +1,17 @@
 export type VersionType = `${number}.${number}.${number}`;
 
 export interface RouterConfigType {
-  defaultLang: string;
-  currentLang: string;
-  supportedLangs: string[];
-  routes: Record<string, RouteType>;
+  defaultLang?: string;
+  currentLang?: string;
+  supportedLangs?: string[];
+  routes?: Record<string, RouteType>;
   routeModules?: Record<string, RouteModulesType> | undefined;
-  views: ViewModulesType;
-  viewsCache: Map<string, { default: any }>;
-  viewsPath: string;
-  viewsExtension: string;
+  views?: ViewModulesType;
+  viewsCache?: Map<string, { default: any }>;
+  viewsPath?: string;
+  /** @deprecated Use `viewsExtensions` instead. This will be removed in a future version. */
+  viewsExtension?: string;
+  viewsExtensions?: string[];
 }
 
 export interface RouterRegex {
